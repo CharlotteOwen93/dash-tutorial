@@ -1,7 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 
 import pandas as pd
@@ -27,20 +27,23 @@ app.layout = html.Div([
                 options=[{'label': i, 'value': i} for i in df['continent'].unique()],
                 value='Asia'
             ),
-            dcc.RadioItems(
-                id='multiplication-radio',
-                options=[{'label': i, 'value': i} for i in [1,2,3,4,5,6,7,8,9,10]],
-                value=1,
-                labelStyle={'display': 'inline-block'}
-            )
+    dcc.RadioItems(
+        id='multiplication-radio',
+        options=[{'label': i, 'value': i} for i in [1,2,3,4,5,6,7,8,9,10]],
+        value=1,
+        labelStyle={'display': 'inline-block'}
+    ),
+    html.Button(id='submit-button-state', n_clicks=0, children='Submit'),
+
 ])
 
 
 @app.callback(
     Output('graph-with-slider', 'figure'),
-    Input('continent-selector', 'value'),
-    Input('multiplication-radio', 'value'))
-def update_figure(selected_continent,selected_factor):
+    Input('submit-button-state', 'n_clicks'),
+    State('continent-selector', 'value'),
+    State('multiplication-radio', 'value'))
+def update_figure(button, selected_continent,selected_factor):
     filtered_df = df[df['continent'] == selected_continent]
     old_df = df[df['continent'] != selected_continent]
 
